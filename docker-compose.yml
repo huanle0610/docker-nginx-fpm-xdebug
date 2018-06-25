@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+    fpm:
+        restart: always
+        image: zaherg/php-7.1-xdebug-alpine
+        env_file:
+          - ./.env
+        volumes:
+        # change to your code path！！！！！！
+        #- /path-to-your-code-here:/var/www/html
+          - ./:/var/www/html
+
+    nginx:
+        restart: always
+        image: nginx:latest
+        depends_on:
+          - fpm
+        links:
+          - fpm:fpm
+        volumes:
+          - ./nginx/conf.d:/etc/nginx/conf.d
+          - ./:/var/www/html
+        ports:
+          - 8088:80
